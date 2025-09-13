@@ -1,0 +1,45 @@
+.api-dashboard {
+  margin-top: 32px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  padding: 24px 18px;
+}
+.api-dashboard h3 {
+  margin-bottom: 18px;
+  font-size: 1.3rem;
+  color: #646cff;
+  font-weight: 700;
+}
+.api-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 18px;
+}
+.api-metric-card {
+  background: #f7f8fa;
+  border-radius: 10px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+  padding: 16px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.api-metric-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 8px;
+}
+.api-metric-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #00bfae;
+  margin-bottom: 6px;
+}
+.api-metric-details {
+  font-size: 0.95em;
+  color: #888;
+  display: flex;
+  gap: 12px;
+}

@@ -1,0 +1,192 @@
+:root {
+  --primary: #646cff;
+  --primary-light: #bfc2ff;
+  --text: #222;
+  --text-light: #666;
+  --background: #f7f8fa;
+  --card-shadow: rgba(0, 0, 0, 0.09);
+}
+
+html {
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body {
+  background: var(--background);
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.crux-app-dashboard {
+  max-width: 1000px;
+  width: calc(100% - 32px);
+  margin: 32px 16px;
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 4px 32px var(--card-shadow);
+  padding: 40px;
+  text-align: center;
+}
+.dashboard-title {
+  font-size: 2.8rem;
+  font-weight: 800;
+  margin-bottom: 36px;
+  color: #3a3a3a;
+  letter-spacing: -1px;
+}
+.dashboard-form {
+  margin-bottom: 32px;
+}
+.form-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.dashboard-input {
+  flex: 1;
+  padding: 18px 20px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  outline: none;
+  background: #f7f8fa;
+  transition: border 0.2s;
+}
+.dashboard-input:focus {
+  border-color: #646cff;
+}
+.dashboard-btn {
+  padding: 18px 32px;
+  background: #646cff;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.dashboard-btn:disabled {
+  background: #bfc2ff;
+  cursor: not-allowed;
+}
+.shortcut-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.shortcut-label {
+  font-size: 1.05rem;
+  color: #888;
+  margin-right: 8px;
+}
+.shortcut-btn {
+  background: #f7f8fa;
+  border: 1.5px solid #646cff;
+  color: #646cff;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.shortcut-btn:hover {
+  background: #646cff;
+  color: #fff;
+}
+.form-factor-label {
+  font-size: 1.05rem;
+  color: #888;
+  margin-right: 8px;
+}
+.form-factor-select {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1.5px solid #e0e0e0;
+  font-size: 1.05rem;
+  background: #f7f8fa;
+  color: #222;
+}
+.dashboard-error {
+  color: #d32f2f;
+  background: #fff0f0;
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+}
+.dashboard-results {
+  background: #f7f8fa;
+  border-radius: 18px;
+  padding: 28px 18px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  margin-top: 18px;
+}
+.dashboard-domain {
+  color: #646cff;
+  font-weight: 700;
+}
+
+/* Vitals grid for results */
+.vitals-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin: 32px 0;
+  width: 100%;
+}
+
+@media (min-width: 1200px) {
+  .vitals-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .vitals-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .crux-app-dashboard {
+    margin: 16px 8px;
+    padding: 24px 16px;
+  }
+
+  .dashboard-title {
+    font-size: 2rem;
+  }
+
+  .form-row {
+    flex-direction: column;
+  }
+
+  .dashboard-input,
+  .dashboard-btn {
+    width: 100%;
+  }
+
+  .shortcut-row {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .shortcut-btn {
+    flex: 1;
+    min-width: 140px;
+  }
+}
