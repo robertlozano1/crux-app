@@ -1,5 +1,5 @@
-import React from 'react';
-import './VitalsCard.css';
+import React from "react";
+import "./VitalsCard.css";
 
 // Core Web Vitals thresholds as per Google's guidelines
 const thresholds = {
@@ -10,31 +10,31 @@ const thresholds = {
 };
 
 const getScoreCategory = (metric, value) => {
-  if (!value || value === 'N/A') return 'unknown';
-  
+  if (!value || value === "N/A") return "unknown";
+
   let normalizedValue = value;
-  
+
   // Convert LCP from ms to seconds for comparison
-  if (metric === 'LCP') {
+  if (metric === "LCP") {
     normalizedValue = value / 1000;
   }
 
   const threshold = thresholds[metric];
-  if (normalizedValue <= threshold.good) return 'good';
-  if (normalizedValue <= threshold.poor) return 'needs-improvement';
-  return 'poor';
+  if (normalizedValue <= threshold.good) return "good";
+  if (normalizedValue <= threshold.poor) return "needs-improvement";
+  return "poor";
 };
 
 const formatValue = (metric, value) => {
-  if (value == null) return 'N/A';
+  if (value == null) return "N/A";
   switch (metric) {
-    case 'LCP':
-      return value.toFixed(0) + 'ms';
-    case 'CLS':
+    case "LCP":
+      return value.toFixed(0) + "ms";
+    case "CLS":
       return value.toFixed(3);
-    case 'INP':
-    case 'TTFB':
-      return value.toFixed(0) + 'ms';
+    case "INP":
+    case "TTFB":
+      return value.toFixed(0) + "ms";
     default:
       return value.toString();
   }
@@ -43,27 +43,67 @@ const formatValue = (metric, value) => {
 const VitalsCard = ({ metric, value }) => {
   const scoreCategory = getScoreCategory(metric, value);
   const formattedValue = formatValue(metric, value);
-  
+
   const descriptions = {
     LCP: "Largest Contentful Paint measures loading performance",
     CLS: "Cumulative Layout Shift measures visual stability",
     INP: "Interaction to Next Paint measures responsiveness",
-    TTFB: "Time to First Byte measures server response time"
+    TTFB: "Time to First Byte measures server response time",
+  };
+
+  // Calculate the percentage for the value bar
+  const calculateValuePercentage = () => {
+    if (!value || value === "N/A") return 0;
+
+    let normalizedValue = value;
+    let threshold = thresholds[metric];
+
+    // Convert LCP from ms to seconds for comparison
+    if (metric === "LCP") {
+      normalizedValue = value / 1000;
+    }
+
+    // Calculate percentage based on thresholds
+    if (normalizedValue <= threshold.good) {
+      return (normalizedValue / threshold.good) * 33.33;
+    } else if (normalizedValue <= threshold.poor) {
+      return (
+        33.33 +
+        ((normalizedValue - threshold.good) /
+          (threshold.poor - threshold.good)) *
+          33.33
+      );
+    } else {
+      return Math.min(
+        100,
+        66.66 + ((normalizedValue - threshold.poor) / threshold.poor) * 33.33
+      );
+    }
   };
 
   return (
-    <div className={'vital-card ' + scoreCategory}>
-      <div className="vital-header">
-        <h3 className="vital-name">{metric}</h3>
-        <span className="vital-score">{formattedValue}</span>
+    <div className="vital-metric-row">
+      <div className="metric-info">
+        <span className="metric-name" title={descriptions[metric]}>
+          {metric}
+        </span>
+        <span className={`metric-value ${scoreCategory}`}>
+          {formattedValue}
+        </span>
       </div>
-      <div className="vital-description">{descriptions[metric]}</div>
-      <div className="score-indicator">
-        <div className="score-label">{scoreCategory.replace('-', ' ')}</div>
-        <div className="score-bars">
-          <div className={'bar good ' + (scoreCategory === 'good' ? 'active' : '')} />
-          <div className={'bar needs-improvement ' + (scoreCategory === 'needs-improvement' ? 'active' : '')} />
-          <div className={'bar poor ' + (scoreCategory === 'poor' ? 'active' : '')} />
+      <div className="metric-bar-container">
+        <div className="threshold-markers">
+          <div className="threshold good" style={{ left: "33.33%" }} />
+          <div
+            className="threshold needs-improvement"
+            style={{ left: "66.66%" }}
+          />
+        </div>
+        <div className="value-bar-container">
+          <div
+            className={`value-bar ${scoreCategory}`}
+            style={{ width: `${calculateValuePercentage()}%` }}
+          />
         </div>
       </div>
     </div>

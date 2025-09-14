@@ -1,135 +1,129 @@
-.vital-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+.vital-metric-row {
   display: flex;
-  flex-direction: column;
-  min-height: 180px;
-  transition: transform 0.2s, box-shadow 0.2s;
+  align-items: center;
+  gap: 20px;
+  padding: 8px 0;
 }
 
-.vital-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-}
-
-.vital-header {
+.metric-info {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 16px;
+  align-items: center;
+  min-width: 150px;
+  gap: 12px;
 }
 
-.vital-name {
-  font-size: 1.3rem;
-  font-weight: 700;
-  margin: 0;
-  color: #2c2c2c;
-}
-
-.vital-score {
-  font-size: 1.5rem;
-  font-weight: 800;
-  padding: 4px 8px;
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.04);
-}
-
-.vital-description {
-  color: #666;
-  font-size: 0.95rem;
-  line-height: 1.5;
-  margin-bottom: auto;
-  padding-bottom: 16px;
-}
-
-.score-indicator {
-  margin-top: auto;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-  padding-top: 16px;
-}
-
-.score-label {
-  font-size: 0.9rem;
+.metric-name {
+  font-size: 1rem;
   font-weight: 600;
-  margin-bottom: 8px;
-  text-transform: capitalize;
-  color: #444;
+  color: var(--text);
+  cursor: help;
 }
 
-.score-bars {
-  display: flex;
-  gap: 4px;
-  height: 6px;
+.metric-value {
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 2px 6px;
+  border-radius: 4px;
+  min-width: 65px;
+  text-align: center;
 }
 
-.bar {
-  flex: 1;
-  background: #e0e0e0;
-  border-radius: 3px;
-  transition: background 0.3s, transform 0.2s;
-  transform-origin: center;
-}
-
-.bar.active {
-  transform: scaleY(1.2);
-}
-
-/* Score categories */
-.good .vital-score {
+.metric-value.good {
   color: #0cce6b;
   background: rgba(12, 206, 107, 0.1);
 }
 
-.needs-improvement .vital-score {
+.metric-value.needs-improvement {
   color: #ffa400;
   background: rgba(255, 164, 0, 0.1);
 }
 
-.poor .vital-score {
+.metric-value.poor {
   color: #ff4e42;
   background: rgba(255, 78, 66, 0.1);
 }
 
-.bar.good.active {
-  background: #0cce6b;
-}
-
-.bar.needs-improvement.active {
-  background: #ffa400;
-}
-
-.bar.poor.active {
-  background: #ff4e42;
-}
-
-/* Unknown/NA state */
-.unknown .vital-score {
+.metric-value.unknown {
   color: #888;
   background: rgba(136, 136, 136, 0.1);
 }
 
+.metric-bar-container {
+  flex: 1;
+  position: relative;
+  height: 24px;
+}
+
+.threshold-markers {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.threshold {
+  position: absolute;
+  height: 100%;
+  width: 2px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.threshold.good {
+  background: rgba(12, 206, 107, 0.3);
+}
+
+.threshold.needs-improvement {
+  background: rgba(255, 164, 0, 0.3);
+}
+
+.value-bar-container {
+  position: absolute;
+  top: 6px;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background: #eee;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.value-bar {
+  height: 100%;
+  transition: width 0.3s ease-out;
+  border-radius: 6px;
+}
+
+.value-bar.good {
+  background: #0cce6b;
+}
+
+.value-bar.needs-improvement {
+  background: #ffa400;
+}
+
+.value-bar.poor {
+  background: #ff4e42;
+}
+
+.value-bar.unknown {
+  background: #888;
+}
+
 @media (max-width: 600px) {
-  .vital-card {
-    min-height: 160px;
-    padding: 20px;
+  .vital-metric-row {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
   }
 
-  .vital-name {
-    font-size: 1.2rem;
+  .metric-info {
+    width: 100%;
+    justify-content: space-between;
   }
 
-  .vital-score {
-    font-size: 1.3rem;
-  }
-
-  .vital-description {
-    font-size: 0.9rem;
-    padding-bottom: 12px;
-  }
-
-  .score-indicator {
-    padding-top: 12px;
+  .metric-bar-container {
+    width: 100%;
   }
 }

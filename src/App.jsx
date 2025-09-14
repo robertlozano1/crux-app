@@ -3,9 +3,9 @@ import "./App.css";
 import VitalsCard from "./VitalsCard";
 
 function App() {
-  const [domain, setDomain] = useState("");
-  const [results, setResults] = useState(null);
-  const [rawResponse, setRawResponse] = useState(null);
+  const [domains, setDomains] = useState([""]);
+  const [results, setResults] = useState({});
+  const [rawResponses, setRawResponses] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [formFactor, setFormFactor] = useState("PHONE");
@@ -19,85 +19,109 @@ function App() {
     return `https://${cleanDomain}`;
   };
 
+  const addDomain = () => {
+    setDomains([...domains, ""]);
+  };
+
+  const removeDomain = (index) => {
+    const newDomains = domains.filter((_, i) => i !== index);
+    setDomains(newDomains);
+  };
+
+  const updateDomain = (index, value) => {
+    const newDomains = [...domains];
+    newDomains[index] = value;
+    setDomains(newDomains);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-    setResults(null);
+    setResults({});
+    setRawResponses({});
+
     try {
       const apiKey = "AIzaSyDpsObJy_AXEpfqrUVGXM0uMQmAS8Dju3o";
-      // Format the URL according to the API docs
-      const cleanUrl = formatUrl(domain);
-      if (!cleanUrl) {
-        throw new Error("Please enter a valid domain name");
-      }
-
       const url = `https://chromeuxreport.googleapis.com/v1/records:queryRecord?key=${apiKey}`;
-      const requestBody = {
-        url: cleanUrl,
-        formFactor: formFactor,
-      };
-      console.log("Making API request to:", url);
-      console.log("Request body:", JSON.stringify(requestBody, null, 2));
 
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(requestBody),
-      });
+      const allResults = {};
+      const allRawResponses = {};
 
-      console.log("Response status:", response.status);
-      const data = await response.json();
-      console.log("API Response:", data);
+      for (const domain of domains) {
+        if (!domain.trim()) continue;
 
-      if (!response.ok) {
-        throw new Error(
-          `API Error: ${data.error?.message || "Failed to fetch data"}`
+        const cleanUrl = formatUrl(domain);
+        if (!cleanUrl) {
+          throw new Error(`Invalid domain: ${domain}`);
+        }
+
+        const requestBody = {
+          url: cleanUrl,
+          formFactor: formFactor,
+        };
+
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(requestBody),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            `API Error for ${domain}: ${
+              data.error?.message || "Failed to fetch data"
+            }`
+          );
+        }
+
+        allRawResponses[domain] = data;
+
+        const metrics = data.record?.metrics || {};
+        const getValue = (metricValue) => {
+          if (!metricValue) return null;
+          return Number(metricValue);
+        };
+
+        const domainResults = {
+          LCP: getValue(metrics.largest_contentful_paint?.percentiles?.p75),
+          CLS: getValue(metrics.cumulative_layout_shift?.percentiles?.p75),
+          INP: getValue(metrics.interaction_to_next_paint?.percentiles?.p75),
+          TTFB: getValue(
+            metrics.experimental_time_to_first_byte?.percentiles?.p75
+          ),
+        };
+
+        // Filter out null values
+        allResults[domain] = Object.entries(domainResults).reduce(
+          (acc, [key, value]) => {
+            if (value !== null) {
+              acc[key] = value;
+            }
+            return acc;
+          },
+          {}
         );
       }
-      setRawResponse(data);
-      // Parse Core Web Vitals using percentiles.p75
-      const metrics = data.record?.metrics || {};
-      const getValue = (metricValue) => {
-        if (!metricValue) return null;
-        return Number(metricValue);
-      };
 
-      const results = {
-        LCP: getValue(metrics.largest_contentful_paint?.percentiles?.p75), // milliseconds
-        CLS: getValue(metrics.cumulative_layout_shift?.percentiles?.p75), // unitless
-        INP: getValue(metrics.interaction_to_next_paint?.percentiles?.p75), // milliseconds
-        TTFB: getValue(
-          metrics.experimental_time_to_first_byte?.percentiles?.p75
-        ), // milliseconds
-      };
-
-      // Filter out null values
-      const validResults = Object.entries(results).reduce(
-        (acc, [key, value]) => {
-          if (value !== null) {
-            acc[key] = value;
-          }
-          return acc;
-        },
-        {}
-      );
-
-      setResults(validResults);
+      setResults(allResults);
+      setRawResponses(allRawResponses);
     } catch (error) {
-      console.error("Error details:", error); // Debug log
+      console.error("Error details:", error);
 
       let errorMessage = "Could not fetch Core Web Vitals. ";
       if (error.message.includes("API key not found")) {
         errorMessage +=
           "API key is missing. Please check your environment setup.";
       } else if (error.message.includes("Invalid Value")) {
-        errorMessage += "Please enter a valid domain name (e.g., example.com).";
+        errorMessage += "Please enter valid domain names (e.g., example.com).";
       } else if (error.message.includes("No data found")) {
-        errorMessage += "No Core Web Vitals data available for this domain.";
+        errorMessage += "No Core Web Vitals data available for these domains.";
       } else if (!navigator.onLine) {
         errorMessage += "Please check your internet connection.";
       } else {
@@ -114,17 +138,38 @@ function App() {
     <div className="crux-app-dashboard">
       <h1 className="dashboard-title">Core Web Vitals Checker</h1>
       <form className="dashboard-form" onSubmit={handleSubmit}>
-        <div className="form-row">
-          <input
-            type="text"
-            className="dashboard-input"
-            placeholder="Enter domain name (e.g. example.com)"
-            value={domain}
-            onChange={(e) => setDomain(e.target.value)}
-            required
-          />
-          <button className="dashboard-btn" type="submit" disabled={loading}>
-            {loading ? "Checking..." : "Fetch"}
+        {domains.map((domain, index) => (
+          <div key={index} className="domain-input-group">
+            <input
+              type="text"
+              className="dashboard-input"
+              placeholder="Enter domain name (e.g. example.com)"
+              value={domain}
+              onChange={(e) => updateDomain(index, e.target.value)}
+              required
+            />
+            {domains.length > 1 && (
+              <button
+                type="button"
+                className="remove-domain-btn"
+                onClick={() => removeDomain(index)}
+              >
+                ×
+              </button>
+            )}
+          </div>
+        ))}
+        <div className="form-actions">
+          <button
+            type="button"
+            className="add-domain-btn"
+            onClick={addDomain}
+            disabled={domains.length >= 4}
+          >
+            Add Domain
+          </button>
+          <button className="fetch-btn" type="submit" disabled={loading}>
+            {loading ? "Checking..." : "Fetch Data"}
           </button>
         </div>
         <div className="shortcut-row">
@@ -135,7 +180,11 @@ function App() {
                 key={d}
                 type="button"
                 className="shortcut-btn"
-                onClick={() => setDomain(d)}
+                onClick={() => {
+                  const newDomains = [...domains];
+                  newDomains[0] = d;
+                  setDomains(newDomains);
+                }}
               >
                 {d}
               </button>
@@ -143,7 +192,7 @@ function App() {
           )}
         </div>
         <div className="form-row">
-          <span className="form-factor-label">Form Factor:</span>
+          <span className="shortcut-label">Form Factor:</span>
           <select
             className="form-factor-select"
             value={formFactor}
@@ -155,30 +204,41 @@ function App() {
         </div>
       </form>
       {error && <div className="dashboard-error">{error}</div>}
-      {results && (
+      {Object.keys(results).length > 0 && (
         <div className="dashboard-results">
-          <h2>
-            Results for <span className="dashboard-domain">{domain}</span>
-          </h2>
-          <div className="vitals-grid">
-            {Object.entries(results).map(([metric, value]) => (
-              <VitalsCard key={metric} metric={metric} value={value} />
+          <div className="results-grid">
+            {Object.entries(results).map(([domain, metrics]) => (
+              <div key={domain} className="domain-results">
+                <h2 className="domain-title">{domain}</h2>
+                <div className="metrics-list">
+                  {Object.entries(metrics).map(([metric, value]) => (
+                    <VitalsCard
+                      key={`${domain}-${metric}`}
+                      metric={metric}
+                      value={value}
+                    />
+                  ))}
+                </div>
+                <details style={{ marginTop: "15px", textAlign: "left" }}>
+                  <summary style={{ cursor: "pointer", userSelect: "none" }}>
+                    Show raw API response
+                  </summary>
+                  <pre
+                    style={{
+                      fontSize: "0.9em",
+                      background: "#f4f4f4",
+                      padding: "10px",
+                      borderRadius: "4px",
+                      overflowX: "auto",
+                      marginTop: "10px",
+                    }}
+                  >
+                    {JSON.stringify(rawResponses[domain], null, 2)}
+                  </pre>
+                </details>
+              </div>
             ))}
           </div>
-          <details style={{ marginTop: "24px", textAlign: "left" }}>
-            <summary>Show raw API response</summary>
-            <pre
-              style={{
-                fontSize: "0.95em",
-                background: "#f4f4f4",
-                padding: "14px",
-                borderRadius: "10px",
-                overflowX: "auto",
-              }}
-            >
-              {JSON.stringify(rawResponse, null, 2)}
-            </pre>
-          </details>
         </div>
       )}
     </div>
