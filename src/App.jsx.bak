@@ -171,7 +171,7 @@ function App() {
               )}
             </div>
           ))}
-
+          
           <div className="shortcut-row">
             <span className="shortcut-label">Examples:</span>
             {["www.homes.com", "www.apartments.com", "www.loopnet.com"].map(
@@ -216,9 +216,7 @@ function App() {
               Query Type Selector
             </span>
 
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "15px" }}
-            >
+            <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
               <div style={{ display: "flex", gap: "10px" }}>
                 <span className="shortcut-label" style={{ minWidth: "100px" }}>
                   Query Type:
@@ -250,7 +248,6 @@ function App() {
               </div>
             </div>
           </div>
-
           <div className="form-actions">
             <button className="fetch-btn" type="submit" disabled={loading}>
               {loading ? "Checking..." : "Go"}
@@ -265,6 +262,119 @@ function App() {
             </button>
           </div>
         </div>
+      </form>
+            <div key={index} className="domain-input-group">
+              <input
+                type="text"
+                className="dashboard-input"
+                placeholder={
+                  queryType === "origin"
+                    ? "Enter domain name (e.g. example.com)"
+                    : "Enter full URL (e.g. https://example.com/page)"
+                }
+                value={domain}
+                onChange={(e) => updateDomain(index, e.target.value)}
+                required
+              />
+              {domains.length > 1 && (
+                <button
+                  type="button"
+                  className="remove-domain-btn"
+                  onClick={() => removeDomain(index)}
+                >
+                  ×
+                </button>
+              )}
+            </div>
+          ))}
+          <div className="shortcut-row">
+            <span className="shortcut-label">Examples:</span>
+            {["www.homes.com", "www.apartments.com", "www.loopnet.com"].map(
+              (d) => (
+                <button
+                  key={d}
+                  type="button"
+                  className="shortcut-btn"
+                  onClick={() => {
+                    const newDomains = [...domains];
+                    newDomains[0] = d;
+                    setDomains(newDomains);
+                  }}
+                >
+                  {d}
+                </button>
+              )
+            )}
+          </div>
+          <div
+            className="form-row"
+            style={{
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+              padding: "20px",
+              position: "relative",
+              margin: "20px 0",
+            }}
+          >
+            <span
+              style={{
+                position: "absolute",
+                top: "-12px",
+                left: "10px",
+                background: "white",
+                padding: "0 5px",
+                color: "#666",
+                fontSize: "14px",
+              }}
+            >
+              Query Type Selector
+            </span>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <span className="shortcut-label" style={{ minWidth: "100px" }}>
+                  Query Type:
+                </span>
+                <select
+                  className="form-factor-select"
+                  value={queryType}
+                  onChange={(e) => setQueryType(e.target.value)}
+                  style={{ width: "250px" }}
+                >
+                  <option value="origin">Origin</option>
+                  <option value="url">Full URL</option>
+                </select>
+              </div>
+
+              <div style={{ display: "flex", gap: "10px" }}>
+                <span className="shortcut-label" style={{ minWidth: "100px" }}>
+                  Device Form Factor:
+                </span>
+                <select
+                  className="form-factor-select"
+                  value={formFactor}
+                  onChange={(e) => setFormFactor(e.target.value)}
+                  style={{ width: "250px" }}
+                >
+                  <option value="DESKTOP">Desktop</option>
+                  <option value="PHONE">Phone</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div className="form-actions">
+            <button className="fetch-btn" type="submit" disabled={loading}>
+              {loading ? "Checking..." : "Go"}
+            </button>
+            <button
+              type="button"
+              className="add-domain-btn"
+              onClick={addDomain}
+              disabled={domains.length >= 4}
+            >
+              Compare Domain
+            </button>
+          </div>
       </form>
       {error && <div className="dashboard-error">{error}</div>}
       {Object.keys(results).length > 0 && (
