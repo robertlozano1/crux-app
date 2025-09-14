@@ -9,14 +9,21 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [formFactor, setFormFactor] = useState("PHONE");
+  const [queryType, setQueryType] = useState("origin"); // "origin" or "url"
 
-  const formatUrl = (domain) => {
-    // Remove protocol if present
-    let cleanDomain = domain.replace(/^(https?:\/\/)?/, "");
-    // Remove any paths, query parameters, etc.
-    cleanDomain = cleanDomain.split("/")[0];
-    // Return full origin URL
-    return `https://${cleanDomain}`;
+  const formatUrl = (input) => {
+    if (queryType === "origin") {
+      // Remove protocol if present and any paths
+      let cleanDomain = input.replace(/^(https?:\/\/)?/, "");
+      cleanDomain = cleanDomain.split("/")[0];
+      return `https://${cleanDomain}`;
+    } else {
+      // For URL mode, ensure URL has protocol
+      if (!input.startsWith("http://") && !input.startsWith("https://")) {
+        return `https://${input}`;
+      }
+      return input;
+    }
   };
 
   const addDomain = () => {
@@ -57,8 +64,8 @@ function App() {
         }
 
         const requestBody = {
-          url: cleanUrl,
           formFactor: formFactor,
+          [queryType]: cleanUrl,
         };
 
         const response = await fetch(url, {
@@ -143,7 +150,11 @@ function App() {
             <input
               type="text"
               className="dashboard-input"
-              placeholder="Enter domain name (e.g. example.com)"
+              placeholder={
+                queryType === "origin"
+                  ? "Enter domain name (e.g. example.com)"
+                  : "Enter full URL (e.g. https://example.com/page)"
+              }
               value={domain}
               onChange={(e) => updateDomain(index, e.target.value)}
               required
@@ -159,19 +170,6 @@ function App() {
             )}
           </div>
         ))}
-        <div className="form-actions">
-          <button className="fetch-btn" type="submit" disabled={loading}>
-            {loading ? "Checking..." : "Go"}
-          </button>
-          <button
-            type="button"
-            className="add-domain-btn"
-            onClick={addDomain}
-            disabled={domains.length >= 4}
-          >
-            Compare Domain
-          </button>
-        </div>
         <div className="shortcut-row">
           <span className="shortcut-label">Examples:</span>
           {["www.homes.com", "www.apartments.com", "www.loopnet.com"].map(
@@ -190,6 +188,30 @@ function App() {
               </button>
             )
           )}
+        </div>
+        <div className="form-row">
+          <span className="shortcut-label">Query Type:</span>
+          <select
+            className="form-factor-select"
+            value={queryType}
+            onChange={(e) => setQueryType(e.target.value)}
+          >
+            <option value="origin">Origin (All domain traffic)</option>
+            <option value="url">Full URL</option>
+          </select>
+        </div>
+        <div className="form-actions">
+          <button className="fetch-btn" type="submit" disabled={loading}>
+            {loading ? "Checking..." : "Go"}
+          </button>
+          <button
+            type="button"
+            className="add-domain-btn"
+            onClick={addDomain}
+            disabled={domains.length >= 4}
+          >
+            Compare Domain
+          </button>
         </div>
         <div className="form-row">
           <span className="shortcut-label">Device Form Factor:</span>
