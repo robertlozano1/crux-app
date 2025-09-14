@@ -192,7 +192,7 @@ function App() {
           )}
         </div>
         <div className="form-row">
-          <span className="shortcut-label">Form Factor:</span>
+          <span className="shortcut-label">Device Form Factor:</span>
           <select
             className="form-factor-select"
             value={formFactor}
