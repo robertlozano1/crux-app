@@ -160,16 +160,16 @@ function App() {
           </div>
         ))}
         <div className="form-actions">
+          <button className="fetch-btn" type="submit" disabled={loading}>
+            {loading ? "Checking..." : "Go"}
+          </button>
           <button
             type="button"
             className="add-domain-btn"
             onClick={addDomain}
             disabled={domains.length >= 4}
           >
-            Add Domain
-          </button>
-          <button className="fetch-btn" type="submit" disabled={loading}>
-            {loading ? "Checking..." : "Fetch Data"}
+            Compare Domain
           </button>
         </div>
         <div className="shortcut-row">

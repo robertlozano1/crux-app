@@ -15,17 +15,16 @@ html {
 .crux-app-dashboard {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 8px 20px;
+  padding: 0 20px;
 }
 
 .dashboard-title {
-  text-align: center;
   color: #333;
-  margin-bottom: 15px;
+  margin-bottom: 16px;
 }
 
 .dashboard-form {
-  margin-bottom: 15px;
+  margin-bottom: 8px;
 }
 
 .domain-input-group {
