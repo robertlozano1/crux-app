@@ -100,6 +100,8 @@ function App() {
         });
 
         const data = await response.json();
+        // Debug: log the raw API response to inspect Image TTFB
+        console.log("API response for", domain, data);
 
         // Handle API errors
         if (!response.ok) {
@@ -128,21 +130,22 @@ function App() {
           TTFB: getValue(
             metrics.experimental_time_to_first_byte?.percentiles?.p75
           ),
+          // Always include Image TTFB, even if null
           "Image TTFB": getValue(
-            metrics.largest_contentful_paint_element?.ttfb?.percentiles?.p75
+            metrics.largest_contentful_paint_image_time_to_first_byte
+              ?.percentiles?.p75
           ),
         };
 
-        // Filter out null values from results
-        allResults[domain] = Object.entries(domainResults).reduce(
-          (acc, [key, value]) => {
-            if (value !== null) {
-              acc[key] = value;
-            }
-            return acc;
-          },
-          {}
-        );
+        // Only filter out null values for metrics except Image TTFB
+        allResults[domain] = {};
+        Object.entries(domainResults).forEach(([key, value]) => {
+          if (key === "Image TTFB") {
+            allResults[domain][key] = value; // Always include
+          } else if (value !== null) {
+            allResults[domain][key] = value;
+          }
+        });
       }
 
       // Update state with results and raw responses
