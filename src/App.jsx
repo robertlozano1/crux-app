@@ -155,18 +155,29 @@ function App() {
         <div className="form-content">
           {domains.map((domain, index) => (
             <div key={index} className="domain-input-group">
-              <input
-                type="text"
-                className="dashboard-input"
-                placeholder={
-                  queryType === "origin"
-                    ? "Enter domain name (e.g. example.com)"
-                    : "Enter URL (e.g. https://example.com/page)"
-                }
-                value={domain}
-                onChange={(e) => updateDomain(index, e.target.value)}
-                required
-              />
+              <div className="input-with-button">
+                <input
+                  type="text"
+                  className="dashboard-input"
+                  placeholder={
+                    queryType === "origin"
+                      ? "Enter domain name (e.g. example.com)"
+                      : "Enter URL (e.g. https://example.com/page)"
+                  }
+                  value={domain}
+                  onChange={(e) => updateDomain(index, e.target.value)}
+                  required
+                />
+                {index === 0 && (
+                  <button
+                    className="fetch-btn"
+                    type="submit"
+                    disabled={loading}
+                  >
+                    {loading ? "Checking..." : "Go"}
+                  </button>
+                )}
+              </div>
               {domains.length > 1 && (
                 <button
                   type="button"
@@ -223,33 +234,25 @@ function App() {
               Query Type Selector
             </span>
 
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "15px" }}
-            >
-              <div style={{ display: "flex", gap: "10px" }}>
-                <span className="shortcut-label" style={{ minWidth: "100px" }}>
-                  Query Type:
-                </span>
+            <div className="query-type-grid">
+              <div className="query-type-field">
+                <label className="query-type-label">Data Scope:</label>
                 <select
                   className="form-factor-select"
                   value={queryType}
                   onChange={(e) => setQueryType(e.target.value)}
-                  style={{ width: "250px" }}
                 >
                   <option value="origin">Origin</option>
                   <option value="url">URL</option>
                 </select>
               </div>
 
-              <div style={{ display: "flex", gap: "10px" }}>
-                <span className="shortcut-label" style={{ minWidth: "100px" }}>
-                  Device Form Factor:
-                </span>
+              <div className="query-type-field">
+                <label className="query-type-label">Device Form Factor:</label>
                 <select
                   className="form-factor-select"
                   value={formFactor}
                   onChange={(e) => setFormFactor(e.target.value)}
-                  style={{ width: "250px" }}
                 >
                   <option value="DESKTOP">Desktop</option>
                   <option value="PHONE">Mobile</option>
@@ -259,9 +262,6 @@ function App() {
           </div>
 
           <div className="form-actions">
-            <button className="fetch-btn" type="submit" disabled={loading}>
-              {loading ? "Checking..." : "Go"}
-            </button>
             <button
               type="button"
               className="add-domain-btn"
