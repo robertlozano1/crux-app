@@ -102,6 +102,9 @@ function App() {
           TTFB: getValue(
             metrics.experimental_time_to_first_byte?.percentiles?.p75
           ),
+          "Image TTFB": getValue(
+            metrics.largest_contentful_paint_element?.ttfb?.percentiles?.p75
+          ),
         };
 
         // Filter out null values
