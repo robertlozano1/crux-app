@@ -370,24 +370,6 @@ function App() {
                     />
                   ))}
                 </div>
-                {/* Show raw API response for debugging */}
-                <details style={{ marginTop: "15px", textAlign: "left" }}>
-                  <summary style={{ cursor: "pointer", userSelect: "none" }}>
-                    Show raw API response
-                  </summary>
-                  <pre
-                    style={{
-                      fontSize: "0.9em",
-                      background: "#f4f4f4",
-                      padding: "10px",
-                      borderRadius: "4px",
-                      overflowX: "auto",
-                      marginTop: "10px",
-                    }}
-                  >
-                    {JSON.stringify(rawResponses[domain], null, 2)}
-                  </pre>
-                </details>
               </div>
             ))}
           </div>
