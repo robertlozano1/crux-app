@@ -205,14 +205,18 @@ button:hover:not(:disabled) {
 
 .results-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
+  min-width: 0;
+  width: 100%;
 }
 
 .domain-results {
   background: #f8f9fa;
   border-radius: 8px;
   padding: 20px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .domain-title {
@@ -231,8 +235,14 @@ button:hover:not(:disabled) {
 .shortcut-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
   margin-bottom: 25px;
+}
+
+.shortcut-examples {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   flex-wrap: wrap;
 }
 

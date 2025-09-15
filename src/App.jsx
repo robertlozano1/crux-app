@@ -194,23 +194,33 @@ function App() {
           ))}
 
           <div className="shortcut-row">
-            <span className="shortcut-label">Examples:</span>
-            {["www.homes.com", "www.apartments.com", "www.loopnet.com"].map(
-              (d) => (
-                <button
-                  key={d}
-                  type="button"
-                  className="shortcut-btn"
-                  onClick={() => {
-                    const newDomains = [...domains];
-                    newDomains[0] = d;
-                    setDomains(newDomains);
-                  }}
-                >
-                  {d}
-                </button>
-              )
-            )}
+            <div className="shortcut-examples">
+              <span className="shortcut-label">Examples:</span>
+              {["www.homes.com", "www.apartments.com", "www.loopnet.com"].map(
+                (d) => (
+                  <button
+                    key={d}
+                    type="button"
+                    className="shortcut-btn"
+                    onClick={() => {
+                      const newDomains = [...domains];
+                      newDomains[0] = d;
+                      setDomains(newDomains);
+                    }}
+                  >
+                    {d}
+                  </button>
+                )
+              )}
+            </div>
+            <button
+              type="button"
+              className="add-domain-btn"
+              onClick={addDomain}
+              disabled={domains.length >= 4}
+            >
+              + Compare Another Domain
+            </button>
           </div>
 
           <div
@@ -221,6 +231,9 @@ function App() {
               padding: "20px",
               position: "relative",
               margin: "20px 0",
+              display: "flex",
+              alignItems: "center",
+              gap: "20px",
             }}
           >
             <span
@@ -250,29 +263,34 @@ function App() {
                 </select>
               </div>
 
-              <div className="query-type-field">
+              <div
+                className="query-type-field"
+                style={{ display: "flex", alignItems: "center" }}
+              >
                 <label className="query-type-label">Device Form Factor:</label>
-                <select
-                  className="form-factor-select"
-                  value={formFactor}
-                  onChange={(e) => setFormFactor(e.target.value)}
-                >
-                  <option value="DESKTOP">Desktop</option>
-                  <option value="PHONE">Mobile</option>
-                </select>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <select
+                    className="form-factor-select"
+                    value={formFactor}
+                    onChange={(e) => setFormFactor(e.target.value)}
+                  >
+                    <option value="DESKTOP">Desktop</option>
+                    <option value="PHONE">Mobile</option>
+                  </select>
+                  <span
+                    style={{ fontSize: "24px", marginLeft: "8px" }}
+                    role="img"
+                    aria-label={
+                      formFactor === "DESKTOP"
+                        ? "desktop computer"
+                        : "mobile phone"
+                    }
+                  >
+                    {formFactor === "DESKTOP" ? "🖥️" : "📱"}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-
-          <div className="form-actions">
-            <button
-              type="button"
-              className="add-domain-btn"
-              onClick={addDomain}
-              disabled={domains.length >= 4}
-            >
-              Compare Domain
-            </button>
           </div>
         </div>
       </form>
