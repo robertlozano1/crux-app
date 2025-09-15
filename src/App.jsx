@@ -8,7 +8,7 @@ function App() {
   const [rawResponses, setRawResponses] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [formFactor, setFormFactor] = useState("PHONE");
+  const [formFactor, setFormFactor] = useState("PHONE"); // still using "PHONE" for API compatibility
   const [queryType, setQueryType] = useState("origin"); // "origin" or "url"
 
   const formatUrl = (input) => {
@@ -143,8 +143,15 @@ function App() {
 
   return (
     <div className="crux-app-dashboard">
-      <h1 className="dashboard-title">Core Web Vitals Checker</h1>
-      <form className="dashboard-form" onSubmit={handleSubmit}>
+      <div className="dashboard-header">
+        <img
+          src="/images/web-vitals-logo.png"
+          alt="Core Web Vitals Logo"
+          className="dashboard-logo"
+        />
+        <h1 className="dashboard-title">Core Web Vitals Checker</h1>
+      </div>
+      <form onSubmit={handleSubmit} className="dashboard-form">
         <div className="form-content">
           {domains.map((domain, index) => (
             <div key={index} className="domain-input-group">
@@ -154,7 +161,7 @@ function App() {
                 placeholder={
                   queryType === "origin"
                     ? "Enter domain name (e.g. example.com)"
-                    : "Enter full URL (e.g. https://example.com/page)"
+                    : "Enter URL (e.g. https://example.com/page)"
                 }
                 value={domain}
                 onChange={(e) => updateDomain(index, e.target.value)}
@@ -230,7 +237,7 @@ function App() {
                   style={{ width: "250px" }}
                 >
                   <option value="origin">Origin</option>
-                  <option value="url">Full URL</option>
+                  <option value="url">URL</option>
                 </select>
               </div>
 
@@ -245,7 +252,7 @@ function App() {
                   style={{ width: "250px" }}
                 >
                   <option value="DESKTOP">Desktop</option>
-                  <option value="PHONE">Phone</option>
+                  <option value="PHONE">Mobile</option>
                 </select>
               </div>
             </div>
