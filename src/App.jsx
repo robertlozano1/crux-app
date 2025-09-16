@@ -1,5 +1,5 @@
 // Import React's useState hook for managing state
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 // Import the main CSS file for styling
 import "./App.css";
 // Import the VitalsCard component for displaying metrics
@@ -9,6 +9,8 @@ import VitalsCard from "./VitalsCard";
 function App() {
   // State for the list of domains/URLs to check
   const [domains, setDomains] = useState([""]);
+  // Refs for each input field
+  const inputRefs = useRef([]);
   // State for storing results from the API
   const [results, setResults] = useState({});
   // State for storing raw API responses
@@ -40,10 +42,22 @@ function App() {
     }
   };
 
-  // Add a new empty domain input field
+  // Add a new empty domain input field and focus it
   const addDomain = () => {
-    setDomains([...domains, ""]);
+    setDomains((prev) => {
+      const newDomains = [...prev, ""];
+      // Focus will be handled in useEffect
+      return newDomains;
+    });
   };
+
+  // Focus the last input when domains length changes
+  useEffect(() => {
+    if (inputRefs.current.length > 1) {
+      const lastIndex = inputRefs.current.length - 1;
+      inputRefs.current[lastIndex]?.focus();
+    }
+  }, [domains.length]);
 
   // Remove a domain input field by index
   const removeDomain = (index) => {
@@ -206,6 +220,7 @@ function App() {
                   onChange={(e) => updateDomain(index, e.target.value)}
                   onFocus={() => setFocusedInputIndex(index)}
                   required
+                  ref={el => inputRefs.current[index] = el}
                 />
                 {/* Only show the Go button for the first input */}
                 {index === 0 && (
