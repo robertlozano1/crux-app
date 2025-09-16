@@ -88,8 +88,9 @@ const VitalsCard = ({ metric, value }) => {
   return (
     <div className="vital-metric-row">
       <div className="metric-info">
-        <span className="metric-name" title={descriptions[metric]}>
+        <span className="metric-name tooltip-container">
           {metric}
+          <span className="tooltip-text">{descriptions[metric]}</span>
         </span>
         <span className={`metric-value ${scoreCategory}`}>
           {formattedValue}

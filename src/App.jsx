@@ -247,22 +247,25 @@ function App() {
               style={{ display: "flex", alignItems: "center", gap: "8px" }}
             >
               <span className="shortcut-label">Examples:</span>
-              {["www.homes.com", "www.apartments.com", "www.loopnet.com"].map(
-                (d) => (
-                  <button
-                    key={d}
-                    type="button"
-                    className="shortcut-btn"
-                    onClick={() => {
-                      const newDomains = [...domains];
-                      newDomains[focusedInputIndex] = d;
-                      setDomains(newDomains);
-                    }}
-                  >
-                    {d}
-                  </button>
-                )
-              )}
+              {[
+                "www.homes.com",
+                "www.apartments.com",
+                "www.loopnet.com",
+                "www.google.com",
+              ].map((d) => (
+                <button
+                  key={d}
+                  type="button"
+                  className="shortcut-btn"
+                  onClick={() => {
+                    const newDomains = [...domains];
+                    newDomains[focusedInputIndex] = d;
+                    setDomains(newDomains);
+                  }}
+                >
+                  {d}
+                </button>
+              ))}
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
               <button
@@ -375,8 +378,13 @@ function App() {
         <div className="dashboard-results">
           <div className="results-grid">
             {/* Render results for each domain */}
-            {Object.entries(results).map(([domain, metrics]) => (
-              <div key={domain} className="domain-results">
+            {Object.entries(results).map(([domain, metrics], idx) => (
+              <div
+                key={domain}
+                className={`domain-results${
+                  Object.keys(results).length === 1 ? " single" : ""
+                }`}
+              >
                 <h2 className="domain-title">{domain}</h2>
                 <div className="metrics-list">
                   {/* Render each metric using VitalsCard */}
