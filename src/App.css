@@ -258,7 +258,7 @@ button:hover:not(:disabled) {
 }
 
 .shortcut-btn {
-  background: none;
+  background: #f5f5f5;
   border: 1px solid #ddd;
   border-radius: 4px;
   padding: 6px 12px;
@@ -269,5 +269,5 @@ button:hover:not(:disabled) {
 
 .shortcut-btn:hover {
   background: var(--background);
-  border-color: var(--primary-light);
+  border-color: #2196f3;
 }
