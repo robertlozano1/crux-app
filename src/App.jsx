@@ -220,18 +220,9 @@ function App() {
                   onChange={(e) => updateDomain(index, e.target.value)}
                   onFocus={() => setFocusedInputIndex(index)}
                   required
-                  ref={el => inputRefs.current[index] = el}
+                  ref={(el) => (inputRefs.current[index] = el)}
                 />
-                {/* Only show the Go button for the first input */}
-                {index === 0 && (
-                  <button
-                    className="fetch-btn"
-                    type="submit"
-                    disabled={loading}
-                  >
-                    {loading ? "Checking..." : "Go"}
-                  </button>
-                )}
+                {/* Go button moved to shortcut row below */}
               </div>
               {/* Show remove button for additional domain inputs */}
               {domains.length > 1 && (
@@ -247,10 +238,15 @@ function App() {
           ))}
 
           {/* Example domains and add domain button */}
-          <div className="shortcut-row">
-            <div className="shortcut-examples">
+          <div
+            className="shortcut-row"
+            style={{ display: "flex", alignItems: "center", gap: "16px" }}
+          >
+            <div
+              className="shortcut-examples"
+              style={{ display: "flex", alignItems: "center", gap: "8px" }}
+            >
               <span className="shortcut-label">Examples:</span>
-              {/* Example domain buttons populate the focused input */}
               {["www.homes.com", "www.apartments.com", "www.loopnet.com"].map(
                 (d) => (
                   <button
@@ -268,15 +264,19 @@ function App() {
                 )
               )}
             </div>
-            {/* Add another domain input field */}
-            <button
-              type="button"
-              className="add-domain-btn"
-              onClick={addDomain}
-              disabled={domains.length >= 4}
-            >
-              + Compare Another Domain
-            </button>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <button
+                type="button"
+                className="add-domain-btn"
+                onClick={addDomain}
+                disabled={domains.length >= 4}
+              >
+                + Add Domain
+              </button>
+              <button className="fetch-btn" type="submit" disabled={loading}>
+                {loading ? "Checking..." : "Go"}
+              </button>
+            </div>
           </div>
 
           {/* Query type and device form factor selectors */}
